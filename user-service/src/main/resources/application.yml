@@ -1,0 +1,154 @@
+#CONFIG PORT
+server:
+  port: 9090
+  max-http-header-size: 100000000
+
+# SPRING CONFIG
+spring:
+
+  #  DATASOURCE MARIADB
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://192.168.20.33:3306/haidm?createDatabaseIfNotExist=true&autoReconnect=true&UseUnicode=true&characterEncoding=utf8&useSSL=false
+    username: root
+    password: Tpc@123456
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+  kafka:
+    listener:
+      missing-topics-fatal: false
+    # CONFIG CONSUMER
+    consumer:
+      group-id: viec3mien_service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      bootstrap-servers: 192.168.20.44:9092
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"
+    # CONFIG PRODUCER
+    producer:
+      bootstrap-servers: 192.168.20.44:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  quartz:
+    job-store-type: jdbc
+    overwrite-existing-jobs: true
+    jdbc:
+      initialize-schema: always
+    scheduler-name: 3T-Scheduler
+  # REDIS
+  redis:
+    host: 192.168.20.33
+    port: 6379
+    database: 0
+    password: admin123
+
+  boot:
+    admin:
+      client:
+        url: http://admin-server:9090
+        username: admin
+        password: admin
+      notify:
+        mail:
+          to:
+
+management:
+  endpoint:
+    web:
+      exposure:
+        include: "*"
+    health:
+      show-details: always
+
+
+#Eureka client config
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+    fetchRegistry: true
+    instance:
+      preferIpAddress: false
+
+auth:
+  user:
+    authorization-key: Authorization
+    authorization-value: eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiIxIiwiaWF0IjoxNjQyMjMxOTkyLCJzdWIiOiI4NWM2ZGMyYy0zMzU2LTRhNmQtYTJlZS02NWEzZDJkYTViZTMiLCJpc3MiOiJkc2Znc3JncyIsInVzZXJfaWQiOjEsInBlcm1pc3Npb25zIjoie1wiZ2VuZXJhbFBlcm1pc3Npb25zXCI6W1wiVVNFUl9DSEFOR0VfUEFTU1wiLFwiVVNFUl9HRVRfUk9MRVNcIixcIlVTRVJfRU5BQkxFXCIsXCJVU0VSX0RJU0FCTEVcIixcIlVTRVJfVVBEQVRFX1NUQVRVU19MSVNUXCIsXCJVU0VSX0RFTEVURV9MSVNUXCIsXCJVU0VSX1VQREFURV9TVEFUVVNfQUxMXCIsXCJVU0VSX0RFTEVURV9BTExcIixcIlVTRVJfR0VUX0FMTF9QRVJNSVNTSU9OXCIsXCJVU0VSX0dFVF9FWElTVF9BUElfS0VZXCIsXCJVU0VSX1JFTE9BRF9BUElfS0VZXCIsXCJVU0VSX0dFVF9BTExcIixcIlVTRVJfQ0hBTkdFX1BBU1NcIixcIlVTRVJfUkVTRVRfUEFTU1wiLFwiVVNFUl9HRVRfQUxMX1RPS0VOXCIsXCJHRVRfVVNFUl9CWV9OQU1FXCIsXCJERUxFVEVfUFJPSkVDVF9CWV9JRFwiLFwiREVMRVRFX1BST0pFQ1RfQllfSURcIixcIlVTRVJfREVMRVRFXCIsXCJVU0VSX0FERFwiLFwiVVNFUl9VUERBVEVcIixcIlVTRVJfR0VUX0JZX0lEXCIsXCJVU0VSX0FERF9ST0xFU1wiLFwiVVNFUl9VUERBVEVfUk9MRVNcIixcIlVTRVJfREVMRVRFX1JPTEVTXCIsXCJVUERBVEVfVVNFUl9JTkZPX1NUQVRVU1wiLFwiVVBEQVRFX1VTRVJfSU5GT19TVEFUVVNcIixcIkdST1VQX0FERFwiLFwiR1JPVVBfVVBEQVRFXCIsXCJHUk9VUF9ERUxFVEVcIixcIkdST1VQX0dFVF9CWV9JRFwiLFwiR1JPVVBfR0VUX0FMTFwiLFwiR1JPVVBfQUREX1VTRVJcIixcIkdST1VQX0RFTEVURV9VU0VSXCIsXCJHUk9VUF9VUERBVEVfUk9MRVwiLFwiR1JPVVBfREVMRVRFX1JPTEVcIixcIkdST1VQX0dFVF9BTExfVVNFUlwiLFwiR1JPVVBfR0VUX0FMTF9ST0xFXCIsXCJHUk9VUF9BRERfUk9MRVwiLFwiR1JPVVBfVVBEQVRFX1VTRVJcIixcIlJPTEVfQUREXCIsXCJST0xFX1VQREFURVwiLFwiUk9MRV9ERUxFVEVcIixcIlJPTEVfR0VUX0FMTFwiLFwiUk9MRV9HRVRfQllfSURcIixcIlJPTEVfR0VUX0JZX1RZUEVcIixcIkNMSUVOVF9BRERcIixcIkNMSUVOVF9HRVRfQUxMXCIsXCJDTElFTlRfR0VUX0JZX0lEXCIsXCJDTElFTlRfREVMRVRFXCIsXCJDTElFTlRfQ0hBTkdFX1NUQVRVU1wiLFwiQ0xJRU5UX0FERF9JUFwiLFwiQ0xJRU5UX0RFTEVURV9JUFwiLFwiQ0xJRU5UX0dFVF9MSVNUX0lQXCIsXCJDTElFTlRfQVBQUk9WRV9UT0tFTlwiLFwiQ0xJRU5UX1VOX0FQUFJPVkVfVE9LRU5cIixcIkNMSUVOVF9ERUxFVEVfVE9LRU5cIixcIkNMSUVOVF9DSEFOR0VfU1RBVFVTX1RPS0VOXCIsXCJDTElFTlRfVVBEQVRFXCIsXCJDTElFTlRfR0VUX0xJU1RfUkVGUkVTSF9UT0tFTlwiLFwiQ0xJRU5UX0dFVF9MSVNUX0FDQ0VTU19UT0tFTlwiLFwiQ0xJRU5UX0dFVF9MSVNUX1JFUVVFU1RfTE9HXCIsXCJDTElFTlRfR0VUX1JFUVVFU1RfTE9HXCIsXCJDTElFTlRfQUREX1VTRVJcIixcIkNMSUVOVF9BRERfU0VSVklDRVwiLFwiQ0xJRU5UX0FERF9BUElcIixcIkNMSUVOVF9ERUxFVEVfQVBJXCIsXCJDTElFTlRfR0VUX1NFUlZJQ0VcIixcIkNMSUVOVF9HRVRfU0VSVklDRV9TVEFUVVNcIixcIkNMSUVOVF9HRVRfU0VSVklDRVNcIixcIkNMSUVOVF9TRVJWSUNFX0dFVF9BUElTXCIsXCJDTElFTlRfUEVORElOR19TRVJWSUNFXCIsXCJDTElFTlRfREVMRVRFX1NFUlZJQ0VcIixcIkNMSUVOVF9ERUxFVEVfVVNFUlwiLFwiQ0xJRU5UX0dFVF9VU0VSU1wiLFwiQ0xJRU5UX1VQREFURV9ST0xFX1VTRVJcIixcIkNMSUVOVF9VUERBVEVfU1RBVFVTX0FDQ0VTU19UT0tFTlwiLFwiREVWRUxPUEVSXCIsXCJDTElFTlRfRVhQT1JUX1JFUVVFU1RfTE9HXCIsXCJDTElFTlRfRVhQT1JUX1JFUVVFU1RfTE9HXCIsXCJDTElFTlRfQ1JFQVRFX0FQSV9LRVlcIixcIkNMSUVOVF9HRVRfQUxMX0FQSV9LRVlcIixcIkNMSUVOVF9ERUxFVEVfQVBJX0tFWVwiLFwiQ0xJRU5UX0NBTkNFTF9BUElfS0VZXCIsXCJDTElFTlRfUkVGUkVTSF9BUElfS0VZXCIsXCJDTElFTlRfQ1JFQVRFX0FQSV9LRVlcIixcIkNMSUVOVF9HRVRfQUxMX0FQSV9LRVlcIixcIkNMSUVOVF9ERUxFVEVfQVBJX0tFWVwiLFwiQ0xJRU5UX0NBTkNFTF9BUElfS0VZXCIsXCJDTElFTlRfUkVGUkVTSF9BUElfS0VZXCIsXCJVUExPQURfSU1BR0VcIixcIkRPV05MT0FEX0ZJTEVcIixcIkdFVF9QUk9GSUxFX0NPTExBQk9SQVRPUlwiLFwiR0VUX1BST0ZJTEVfV0FJVF9BUFBMWVwiLFwiR0VUX1BST0ZJTEVfU1RBVFVTXCIsXCJBRERfQ09MTEFCT1JBVE9SX1NUQVRVU1wiLFwiQUREX0NPTExBQk9SQVRPUl9TVEFUVVNcIixcIkFERF9DT0xMQUJPUkFUT1JcIl0sXCJzcGVjaWZpY1Blcm1pc3Npb25zXCI6W119IiwibmFtZSI6ImRzZmdzcmdzIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJ0eXBlIjoiQmVhcmVyIiwiZW1haWwiOiJoQGdtYWlsLmNvbSJ9.8jGFxQS422Niw1PT8Nt2JPe5YtE252COmTwV9qIauVw
+    url-update: http://auth-service:9090/user-ctv
+    url-update-status: http://auth-service:9090/user-info/{userId}/status
+  document:
+    prefix: http://192.168.20.59:9790/file/public/image/
+
+#HR tech config
+
+hr-tech:
+  username: ctv_app
+  password: Ae!trXP65CDMjc&F
+  partner: Default
+  status:
+    ctv: APPROVE
+  url:
+    get-token: http://proxy.thinhtientech.com/uat-hr/api/v1/CtvApp/Authenticate
+    get-province: http://proxy.thinhtientech.com/uat-hr/api/v1/Data/Province
+    get-district: http://proxy.thinhtientech.com/uat-hr/api/v1/Data/DistrictByProvinceId
+    collaborator-register: http://proxy.thinhtientech.com/uat-hr/api/v1/Request/CollaboratorRegister
+    get-gender: http://proxy.thinhtientech.com/uat-hr/api/v1/Data/Gender
+    get-literacy: http://proxy.thinhtientech.com/uat-hr/api/v1/Data/Literacy
+    get-language: http://proxy.thinhtientech.com/uat-hr/api/v1/Data/Language
+    get-profile-type: http://proxy.thinhtientech.com/uat-hr/api/v1/Data/ProfileType
+    get-data-status: http://proxy.thinhtientech.com/uat-hr/api/v1/Data/ProfileStatus
+    get-career-area: http://proxy.thinhtientech.com/uat-hr/api/v1/Data/CareerArea
+    get-career-by-area: http://proxy.thinhtientech.com/uat-hr/api/v1/Data/CareerByAreaId
+    get-list-company: http://proxy.thinhtientech.com/uat-hr/api/v1/Partner/List
+    get-recruitments: http://proxy.thinhtientech.com/uat-hr/api/v1/Recruitment/List
+    get-recruitment: http://proxy.thinhtientech.com/uat-hr/api/v1/Recruitment/Get/
+    get-profile-users: http://proxy.thinhtientech.com/uat-hr/api/v1/Profile/List
+    get-profile-ctvs: http://proxy.thinhtientech.com/uat-hr/api/v1/Profile/List
+    create-profile: http://proxy.thinhtientech.com/uat-hr/api/v1/Profile/Add
+    media-data: http://proxy.thinhtientech.com/uat-hr/
+    get-profile-status: http://proxy.thinhtientech.com/uat-hr/api/v1/Profile/StatusBoxs
+    get-profile-detail: http://proxy.thinhtientech.com/uat-hr/api/v1/Profile/Get/
+    get-total-target: http://proxy.thinhtientech.com/uat-hr/api/v1/Recruitment/TotalTarget
+    apply-recruitment-waiting: http://proxy.thinhtientech.com/uat-hr/api/v1/Profile/ApplyRecruitment
+    change-profile: http://proxy.thinhtientech.com/uat-hr/api/v1/Profile/Edit
+    get-company: http://proxy.thinhtientech.com/uat-hr/api/v1/Partner/Get/
+    check-collaborator: http://proxy.thinhtientech.com/uat-hr/api/v1/Request/UserSync
+    get-need-advice-leads: http://proxy.thinhtientech.com/uat-hr/api/v1/WorkCollaborator/GetProfiles
+    get-lead-status: http://proxy.thinhtientech.com/uat-hr/api/v1/WorkCollaborator/GetListBox
+    update-advice-lead: http://proxy.thinhtientech.com/uat-hr/api/v1/WorkCollaborator/UpdateStatusProfile
+    edit-status-advice-lead-profile: http://proxy.thinhtientech.com/uat-hr/api/v1/WorkCollaborator/EditProfile
+    get-advice-user-group-id: http://proxy.thinhtientech.com/uat-hr/api/v1/WorkCollaborator/GetUserGroups
+    reason-status: http://proxy.thinhtientech.com/uat-hr/api/v1/Data/StatusReason
+    fit-review: http://proxy.thinhtientech.com/uat-hr/api/v1/Data/FitReview
+    recruitment-by-partner-id: http://proxy.thinhtientech.com/uat-hr/api/v1/WorkCollaborator/GetRecruitments
+    need-help-list-box: http://proxy.thinhtientech.com/uat-hr/api/v1/WorkAreaPersonnel/GetListBox
+    need-help-list-profiles: http://proxy.thinhtientech.com/uat-hr/api/v1/WorkAreaPersonnel/GetProfiles
+    need-help-recruitment: http://proxy.thinhtientech.com/uat-hr/api/v1/WorkAreaPersonnel/GetRecruitments
+    update-help-lead-status: http://proxy.thinhtientech.com/uat-hr/api/v1/WorkAreaPersonnel/UpdateStatusProfile
+    edit-help-lead-info: http://proxy.thinhtientech.com/uat-hr/api/v1/WorkAreaPersonnel/EditProfile
+    get-help-user-group-id: http://proxy.thinhtientech.com/uat-hr/api/v1/WorkAreaPersonnel/GetUserGroups
+
+kafka:
+  topic:
+    user-status: update_user_status_dev
+scheduler:
+  name: VIEC3MIEN
+  enable: true
+  staticSchedulerTriggerConfigs:
+    -
+      name: UpdateUserInfoJob
+      cron: '*/10 * * * * ?'
+      jobClass: com.ttt.v3m.viec3mien.job.UpdateUserInfoJob
+      enable: true
+      override: true

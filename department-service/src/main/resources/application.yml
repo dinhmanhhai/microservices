@@ -1,0 +1,24 @@
+server:
+  port: 8081
+
+# SPRING CONFIG
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+
+    data:
+      pageable:
+        max-page-size: 1
+
+  #    DATASOURCE MARIADB
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://192.168.20.33:3306/haidm?createDatabaseIfNotExist=true&autoReconnect=true&UseUnicode=true&characterEncoding=utf8&useSSL=false
+    username: root
+    password: Tpc@123456
+
+
